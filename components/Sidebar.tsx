@@ -148,16 +148,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isDesktopOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
         </button>
 
-        <div className="p-6 border-b border-gray-700 bg-gray-800 shrink-0">
-          <h1 className="text-xl font-extrabold text-indigo-400 flex items-center gap-2">
+        {/* Compact Header: p-3, text-lg */}
+        <div className="p-3 border-b border-gray-700 bg-gray-800 shrink-0">
+          <h1 className="text-lg font-extrabold text-indigo-400 flex items-center gap-2">
             <span>🚗</span>
             <span>Controle Caronas</span>
           </h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
-          <div className="mb-4">
-             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Histórico</h3>
+        <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
+          <div className="mb-2">
+             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Histórico</h3>
              
              {/* Dynamic Tree */}
              {Object.keys(groupedData.grouped).sort().map(yearStr => {
@@ -166,7 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                const isYearOpen = expandedGroups.has(yearId);
 
                return (
-                 <div key={yearId} className="mb-2">
+                 <div key={yearId} className="mb-1">
                    <button 
                     onClick={() => toggleGroup(yearId)}
                     className="w-full flex items-center text-indigo-300 hover:text-white font-bold text-lg mb-1"
@@ -183,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                          const isMonthOpen = expandedGroups.has(monthId);
 
                          return (
-                           <div key={monthId} className="mb-2">
+                           <div key={monthId} className="mb-1">
                              <button 
                               onClick={() => toggleGroup(monthId)}
                               className="w-full flex items-center text-gray-400 hover:text-gray-200 font-medium text-sm py-1"
@@ -208,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
              {/* Other Weeks */}
              {groupedData.otherWeeks.length > 0 && (
-               <div className="mt-4">
+               <div className="mt-2">
                  <button 
                    onClick={() => toggleGroup('other')}
                    className="w-full flex items-center text-gray-400 hover:text-white font-bold text-sm mb-2"
@@ -226,19 +227,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-700 bg-gray-800 space-y-3 shrink-0">
+        {/* Compact Footer: p-2, smaller gap */}
+        <div className="p-2 border-t border-gray-700 bg-gray-800 space-y-2 shrink-0 pb-3 md:pb-2">
           <button 
             onClick={onOpenNewWeek}
-            className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg shadow-lg transition-all active:scale-95"
+            className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-lg shadow-lg transition-all active:scale-95 text-sm"
           >
-            <Calendar size={18} />
+            <Calendar size={16} />
             <span className={!isDesktopOpen && !isOpen ? 'hidden' : 'block'}>Nova Semana</span>
           </button>
           <button 
             onClick={onOpenBackup}
-            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-lg shadow-lg transition-all active:scale-95"
+            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3 rounded-lg shadow-lg transition-all active:scale-95 text-sm"
           >
-            <Database size={18} />
+            <Database size={16} />
             <span className={!isDesktopOpen && !isOpen ? 'hidden' : 'block'}>Backup</span>
           </button>
         </div>

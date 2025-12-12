@@ -55,7 +55,7 @@ export const TripList: React.FC<TripListProps> = ({
     const isIda = type === 'Ida';
     const headerColor = isIda ? 'bg-sky-100 text-sky-800 border-sky-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200';
     
-    // Past due logic
+    // Past due logic check
     let isPastDue = false;
     const match = trip.day.match(/\((\d{2})\/(\d{2})\)/);
     if (match) {
@@ -65,8 +65,12 @@ export const TripList: React.FC<TripListProps> = ({
         const y = weekStart ? weekStart.getFullYear() : new Date().getFullYear();
         const tripDate = new Date(y, m, d);
         const today = new Date();
-        today.setHours(0,0,0,0);
-        if (tripDate < today) isPastDue = true;
+        today.setHours(0,0,0,0); // Clear time for accurate date comparison
+        
+        // If trip date is strictly less than today (yesterday or older)
+        if (tripDate < today) {
+          isPastDue = true;
+        }
     }
 
     return (
@@ -83,19 +87,26 @@ export const TripList: React.FC<TripListProps> = ({
            </button>
         </div>
         
-        <div className="divide-y divide-gray-50">
+        {/* Removed divide-y to prevent style conflicts on siblings */}
+        <div className="flex flex-col">
           {trip.participants.map((person: Participant, pIdx: number) => {
-             const rowStateClass = person.paid 
-                ? 'bg-green-50/30' 
-                : isPastDue 
-                  ? 'bg-red-50 border-l-4 border-l-red-400' 
-                  : 'hover:bg-gray-50';
+             // Logic: Red border ONLY if unpaid AND date is in the past.
+             const isLateAndUnpaid = !person.paid && isPastDue;
+
+             const rowStateClass = isLateAndUnpaid
+                ? 'bg-red-50 border-l-4 border-l-red-500' // Red warning
+                : 'border-l-4 border-transparent hover:bg-gray-50'; // Normal
 
              return (
-               <div key={person.id} className={`flex items-center justify-between p-3 pl-4 transition-colors group ${rowStateClass}`}>
+               <div 
+                 key={person.id} 
+                 className={`flex items-center justify-between p-3 pl-4 transition-colors group border-b border-gray-50 last:border-b-0 ${rowStateClass}`}
+               >
                  <div className="flex items-center gap-3">
                    <div className="flex flex-col">
-                     <span className="font-medium text-gray-800 text-sm">{person.name}</span>
+                     <span className={`font-medium text-sm ${isLateAndUnpaid ? 'text-red-700' : 'text-gray-800'}`}>
+                       {person.name}
+                     </span>
                    </div>
                    
                    {/* Actions visible on hover */}
@@ -116,7 +127,7 @@ export const TripList: React.FC<TripListProps> = ({
                  </div>
 
                  <div className="flex items-center gap-3">
-                    <span className={`text-sm font-semibold hidden sm:block ${person.paid ? 'text-green-600' : 'text-red-400'}`}>
+                    <span className={`text-sm font-semibold hidden sm:block ${person.paid ? 'text-green-600' : (isLateAndUnpaid ? 'text-red-500' : 'text-gray-400')}`}>
                       R$ {PAYMENT_VALUE.toFixed(2).replace('.', ',')}
                     </span>
                     
